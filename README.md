@@ -19,10 +19,10 @@ Ein NodeJS-basiertes Buchungssystem für einen Trainingsraum mit Laufband-Tracki
 
 ## Installation
 
-1. **Projektstruktur erstellen:**
+1. **Repository klonen:**
 
 ```bash
-mkdir gym-booking && cd gym-booking
+git clone https://github.com/nwawrzyniak/gym-booking.git
 ```
 
 2. **Dateien erstellen:**
@@ -52,14 +52,28 @@ gym-booking/
 
 3. **Environment-Variablen konfigurieren:**
 
-Erstelle eine `.env`-Datei mit folgenden Werten:
+Erstelle eine `.env`-Datei. Hier ist eine Beispiel-`.env`:
 
 ```yaml
-- SMTP_HOST=dein-smtp-server.de
-- SMTP_PORT=587
-- SMTP_USER=mail@nwawsoft.cloud
-- SMTP_PASS=dein-smtp-passwort
-- SESSION_SECRET=generiere-einen-langen-zufälligen-string
+# Application Settings
+NODE_ENV=production
+PORT=3000
+PROTOCOL=https
+SESSION_SECRET=there-should-be-a-very-long-and-very-random-string-here
+DOMAIN=gym.example.com
+
+# Email Configuration
+ADMIN_EMAIL=mail@example.com
+SMTP_HOST=smtp.example.com
+SMTP_PORT=465
+SMTP_USER=mail@example.com
+SMTP_PASS=YourSMTPPassword
+
+# Traefik Configuration
+TRAEFIK_ENABLE=true
+TRAEFIK_ENTRYPOINTS=websecure
+TRAEFIK_TLS=true
+TRAEFIK_PORT=3000
 ```
 
 4. **Traefik-Netzwerk erstellen** (falls noch nicht vorhanden):
@@ -71,7 +85,7 @@ docker network create traefik-network
 5. **Anwendung starten:**
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 6. **Logs prüfen:**
@@ -84,7 +98,7 @@ docker compose logs -f
 
 ### Erster Start
 
-1. Öffne `https://gym.nwawsoft.cloud` im Browser
+1. Öffne `https://gym.example.com` im Browser
 2. Klicke auf "Registrieren"
 3. Fülle das Registrierungsformular aus
 4. Der Admin erhält eine E-Mail mit folgenden Optionen:
@@ -124,7 +138,7 @@ docker compose restart
 
 ### Anwendung stoppen:
 ```bash
-docker compose down
+docker compose down --remove-orphans
 ```
 
 ### Daten sichern:
@@ -134,7 +148,7 @@ tar -czf backup-$(date +%Y%m%d).tar.gz data/
 
 ## Sicherheitshinweise
 
-- Ändere unbedingt `SESSION_SECRET` in der compose.yml
+- Verwende ein sicheres `SESSION_SECRET` in der `.env`
 - Verwende sichere SMTP-Credentials
 - Stelle sicher, dass Traefik korrekt konfiguriert ist
 - Sichere regelmäßig das `data`-Verzeichnis
@@ -142,32 +156,20 @@ tar -czf backup-$(date +%Y%m%d).tar.gz data/
 ## Troubleshooting
 
 ### E-Mails werden nicht versendet:
-- Prüfe SMTP-Credentials in der compose.yml
+- Prüfe SMTP-Credentials in der `.env`
 - Prüfe Logs: `docker compose logs gym-app`
 - Teste SMTP-Verbindung zum Server
 
 ### Traefik findet die Anwendung nicht:
 - Prüfe ob das Netzwerk `traefik-network` existiert
-- Prüfe Traefik-Labels in der compose.yml
-- Prüfe Traefik-Logs
+- Prüfe den Abschnitt "Traefik Configuration" in der `.env`
+- Prüfe die Traefik-Logs
 
 ### Daten gehen verloren:
 - Stelle sicher, dass `./data` als Volume gemountet ist
 - Prüfe Dateiberechtigungen im data-Verzeichnis
 
 ## Anpassungen
-
-### Domain ändern:
-Ersetze in der `compose.yml`:
-```yaml
-- "traefik.http.routers.gym.rule=Host(`deine-domain.de`)"
-```
-
-### Port ändern:
-Ändere in der `compose.yml`:
-```yaml
-- PORT=3000  # <- hier
-```
 
 ## Support
 
