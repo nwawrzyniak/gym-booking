@@ -1,0 +1,31 @@
+services:
+  gym-app:
+    build: .
+    container_name: gym-booking
+    env_file:
+      - .env
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - BASE_URL=${PROTOCOL}://${DOMAIN}
+    volumes:
+      - ./data:/app/data
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=${TRAEFIK_ENABLE}"
+      - "traefik.http.routers.gym.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.gym.entrypoints=${TRAEFIK_ENTRYPOINTS}"
+      - "traefik.http.routers.gym.tls=${TRAEFIK_TLS}"
+      - "traefik.http.services.gym.loadbalancer.server.port=${TRAEFIK_PORT}"
+
+networks:
+  traefik-network:
+    external: true
