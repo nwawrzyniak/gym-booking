@@ -25,32 +25,7 @@ Ein NodeJS-basiertes Buchungssystem für einen Trainingsraum mit Laufband-Tracki
 git clone https://github.com/nwawrzyniak/gym-booking.git
 ```
 
-2. **Dateien erstellen:**
-
-Erstelle folgende Verzeichnisstruktur:
-
-```
-gym-booking/
-├── compose.yml
-├── Dockerfile
-├── package.json
-├── server.js
-├── views/
-│   ├── index.ejs
-│   ├── register.ejs
-│   ├── login.ejs
-│   ├── dashboard.ejs
-│   ├── book.ejs
-│   ├── bookings.ejs
-│   ├── leaderboard.ejs
-│   └── partials/
-│       └── nav.ejs
-├── public/
-│   └── style.css
-└── data/  (wird automatisch erstellt)
-```
-
-3. **Environment-Variablen konfigurieren:**
+2. **Environment-Variablen konfigurieren:**
 
 Erstelle eine `.env`-Datei. Hier ist eine Beispiel-`.env`:
 
@@ -76,19 +51,19 @@ TRAEFIK_TLS=true
 TRAEFIK_PORT=3000
 ```
 
-4. **Traefik-Netzwerk erstellen** (falls noch nicht vorhanden):
+3. **Traefik-Netzwerk erstellen** (falls noch nicht vorhanden):
 
 ```bash
 docker network create traefik-network
 ```
 
-5. **Anwendung starten:**
+4. **Anwendung starten:**
 
 ```bash
 docker compose up -d --build
 ```
 
-6. **Logs prüfen:**
+5. **Logs prüfen:**
 
 ```bash
 docker compose logs -f
