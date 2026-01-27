@@ -1,13 +1,17 @@
 <nav class="navbar">
-    <div class="nav-container">
-        <a href="/dashboard" class="nav-brand">🏃 Trainingsraum</a>
-        <div class="nav-menu">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/book">Buchen</a>
-            <a href="/bookings">Buchungen</a>
-            <a href="/leaderboard">Rangliste</a>
-            <span class="nav-user"><%= displayName %></span>
-            <a href="/logout" class="btn btn-small">Logout</a>
-        </div>
+  <div class="nav-container">
+    <a href="/dashboard" class="nav-brand">🏃 Trainingsraum</a>
+    <div class="nav-menu">
+      <a class="nav-dashboard" href="/dashboard">Dashboard</a>
+      <a class="nav-new-booking" href="/book">Buchen</a>
+      <a class="nav-all-bookings" href="/bookings">Buchungen</a>
+      <a class="nav-leaderboard" href="/leaderboard">Rangliste</a>
+      <div class="nav-user-info">
+        <span class="nav-user">
+          <%= displayName %>
+        </span>
+        <a href="/logout" class="btn btn-small nav-logout">Logout</a>
+      </div>
     </div>
+  </div>
 </nav>
