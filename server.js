@@ -136,13 +136,15 @@ app.post('/register', async (req, res) => {
     password: hashedPassword,
     ip,
     token,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    humor: false
   };
 
   pending.push(newUser);
   await writeJSON(FILES.pending, pending);
 
-  const approveUrl = `${process.env.BASE_URL}/admin/approve/${token}`;
+  const approveUrlHumor = `${process.env.BASE_URL}/admin/approve/${token}?humor=true`;
+  const approveUrlNoHumor = `${process.env.BASE_URL}/admin/approve/${token}?humor=false`;
   const rejectUrl = `${process.env.BASE_URL}/admin/reject/${token}`;
   const blockUrl = `${process.env.BASE_URL}/admin/block/${token}`;
 
@@ -159,7 +161,8 @@ app.post('/register', async (req, res) => {
       <p><strong>Datum:</strong> ${new Date().toLocaleString('de-DE')}</p>
       <br>
       <p>
-        <a href="${approveUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; margin-right: 10px;">Akzeptieren</a>
+        <a href="${approveUrlHumor}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; margin-right: 10px;">Approve (Humor)</a>
+        <a href="${approveUrlNoHumor}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; margin-right: 10px;">Approve (No Humor)</a>
         <a href="${rejectUrl}" style="background-color: #f44336; color: white; padding: 10px 20px; text-decoration: none; margin-right: 10px;">Ablehnen</a>
         <a href="${blockUrl}" style="background-color: #000; color: white; padding: 10px 20px; text-decoration: none;">IP-Adresse blockieren</a>
       </p>
@@ -188,6 +191,8 @@ app.get('/admin/approve/:token', async (req, res) => {
   }
 
   const user = pending[userIndex];
+  const humor = req.query.humor === 'true';
+  user.humor = humor;
   delete user.token;
   
   const users = await readJSON(FILES.users);
