@@ -276,6 +276,8 @@ app.get('/logout', (req, res) => {
 
 app.get('/dashboard', requireAuth, async (req, res) => {
   const bookings = await readJSON(FILES.bookings);
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === req.session.userId);
   const now = new Date();
   
   const upcomingBookings = bookings
@@ -288,12 +290,15 @@ app.get('/dashboard', requireAuth, async (req, res) => {
 
   res.render('dashboard', { 
     displayName: req.session.displayName,
+    humor: user?.humor || false,
     upcomingBookings
   });
 });
 
 app.get('/book', requireAuth, async (req, res) => {
-  res.render('book', { displayName: req.session.displayName });
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === req.session.userId);
+  res.render('book', { displayName: req.session.displayName, humor: user?.humor || false });
 });
 
 app.post('/book', requireAuth, async (req, res) => {
@@ -303,8 +308,11 @@ app.post('/book', requireAuth, async (req, res) => {
   const end = new Date(`${date}T${endTime}`);
   
   if (end <= start) {
+    const users = await readJSON(FILES.users);
+    const user = users.find(u => u.id === req.session.userId);
     return res.render('book', { 
       displayName: req.session.displayName,
+      humor: user?.humor || false,
       error: 'Die Endzeit muss nach der Startzeit liegen.' 
     });
   }
@@ -341,6 +349,8 @@ app.post('/book', requireAuth, async (req, res) => {
 
 app.get('/bookings', requireAuth, async (req, res) => {
   const bookings = await readJSON(FILES.bookings);
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === req.session.userId);
   const now = new Date();
   
   const allBookings = bookings
@@ -349,6 +359,7 @@ app.get('/bookings', requireAuth, async (req, res) => {
 
   res.render('bookings', { 
     displayName: req.session.displayName,
+    humor: user?.humor || false,
     bookings: allBookings
   });
 });
@@ -384,6 +395,8 @@ app.post('/complete-booking/:id', requireAuth, async (req, res) => {
 
 app.get('/leaderboard', requireAuth, async (req, res) => {
   const sessions = await readJSON(FILES.sessions);
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === req.session.userId);
   
   const stats = {};
   sessions.forEach(s => {
@@ -398,6 +411,7 @@ app.get('/leaderboard', requireAuth, async (req, res) => {
 
   res.render('leaderboard', { 
     displayName: req.session.displayName,
+    humor: user?.humor || false,
     leaderboard
   });
 });

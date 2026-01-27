@@ -9,15 +9,15 @@
 </head>
 
 <body>
-  <%- include('partials/nav', { displayName }) %>
+  <%- include('partials/nav', { displayName, humor }) %>
 
   <div class="container">
     <h1>Willkommen, <%= displayName %>!</h1>
 
     <div class="dashboard-grid">
       <div class="card">
-        <h2>🏃 Raum buchen</h2>
-        <p>Reserviere den Trainingsraum für deine nächste Session</p>
+        <h2>🏃 <% if (humor) { %>Raum<% } else { %>Laufband<% } %> buchen</h2>
+        <p>Reserviere <% if (humor) { %>den Trainingsraum<% } else { %>das Laufband<% } %> für deine nächste Session</p>
         <a href="/book" class="btn btn-primary">Jetzt buchen</a>
       </div>
 
@@ -27,11 +27,13 @@
         <a href="/bookings" class="btn btn-secondary">Buchungen ansehen</a>
       </div>
 
+      <% if (humor) { %>
       <div class="card">
         <h2>🏆 Rangliste</h2>
         <p>Vergleiche deine Leistung mit anderen</p>
         <a href="/leaderboard" class="btn btn-secondary">Zur Rangliste</a>
       </div>
+      <% } %>
     </div>
 
     <% if (upcomingBookings.length > 0) { %>
@@ -43,11 +45,11 @@
           <div class="booking-info">
             <strong>
               <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
-                                        weekday: 'short', 
-                                        year: 'numeric', 
-                                        month: 'long', 
-                                        day: 'numeric' 
-                                    }) %>
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) %>
             </strong>
             <br>
             <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> -
