@@ -137,7 +137,8 @@ app.post('/register', async (req, res) => {
     ip,
     token,
     createdAt: new Date().toISOString(),
-    humor: false
+    humor: false,
+    role: 'user'
   };
 
   pending.push(newUser);
@@ -193,6 +194,7 @@ app.get('/admin/approve/:token', async (req, res) => {
   const user = pending[userIndex];
   const humor = req.query.humor === 'true';
   user.humor = humor;
+  user.role = user.role || 'user';
   delete user.token;
   
   const users = await readJSON(FILES.users);
