@@ -75,7 +75,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 500px;
+  max-width: max-content;
   margin: 100px auto;
 }
 
@@ -85,7 +85,7 @@ h1 {
   background-color: white;
   border-radius: 8px;
   padding: 4px 8px;
-  width: max-content;
+  width: fit-content;
   margin-left: auto;
   margin-right: auto;
 }

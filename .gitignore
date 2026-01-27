@@ -2,3 +2,4 @@
 /data/
 package-lock.json
 node_modules/
+.hintrc
