@@ -51,7 +51,7 @@
                                 <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> - 
                                 <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
                             </div>
-                            <% if (!booking.completed && new Date(booking.startTime) <= new Date()) { %>
+                            <% if (!booking.completed && booking.canComplete) { %>
                                 <button class="btn btn-small btn-primary" onclick="completeBooking(<%= booking.id %>)">
                                     Training abschließen
                                 </button>

@@ -273,6 +273,10 @@ app.get('/dashboard', requireAuth, async (req, res) => {
   
   const upcomingBookings = bookings
     .filter(b => b.userId === req.session.userId && new Date(b.endTime) > now)
+    .map(b => ({
+      ...b,
+      canComplete: !b.completed && new Date(b.startTime) <= now
+    }))
     .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
   res.render('dashboard', { 
