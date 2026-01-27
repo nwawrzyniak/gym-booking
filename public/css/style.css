@@ -154,6 +154,34 @@ h1 {
   border-color: #667eea;
 }
 
+.time-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-input-group input {
+  flex: 1;
+  max-width: 80px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  transition: border 0.3s;
+}
+
+.time-input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.time-input-group span {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 500;
+}
+
 .alert {
   padding: 15px;
   border-radius: 8px;

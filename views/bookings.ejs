@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alle Buchungen</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alle Buchungen</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-    <%- include('partials/nav', { displayName }) %>
-    
-    <div class="container">
-        <h1>Alle Buchungen</h1>
-        
-        <% if (bookings.length === 0) { %>
-            <p>Momentan gibt es keine kommenden Buchungen.</p>
-        <% } else { %>
-            <div class="bookings-list">
-                <% bookings.forEach(booking => { %>
-                    <div class="booking-item">
-                        <div class="booking-info">
-                            <strong><%= booking.displayName %></strong><br>
-                            <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
+  <%- include('partials/nav', { displayName }) %>
+
+  <div class="container">
+    <h1>Alle Buchungen</h1>
+
+    <% if (bookings.length === 0) { %>
+    <p>Momentan gibt es keine kommenden Buchungen.</p>
+    <% } else { %>
+    <div class="bookings-list">
+      <% bookings.forEach(booking => { %>
+      <div class="booking-item">
+        <div class="booking-info">
+          <strong><%= booking.displayName %></strong><br>
+          <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
                                 weekday: 'short', 
                                 year: 'numeric', 
                                 month: 'long', 
                                 day: 'numeric' 
                             }) %><br>
-                            <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> - 
-                            <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
-                        </div>
-                    </div>
-                <% }) %>
-            </div>
-        <% } %>
-        
-        <p class="text-center">
-            <a href="/dashboard" class="btn btn-secondary">Zurück zum Dashboard</a>
-        </p>
+          <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> -
+          <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
+        </div>
+      </div>
+      <% }) %>
     </div>
+    <% } %>
+
+    <p class="text-center">
+      <a href="/dashboard" class="btn btn-secondary">Zurück zum Dashboard</a>
+    </p>
+  </div>
 </body>
+
 </html>

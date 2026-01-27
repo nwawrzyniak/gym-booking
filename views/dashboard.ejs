@@ -1,115 +1,92 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-    <%- include('partials/nav', { displayName }) %>
-    
-    <div class="container">
-        <h1>Willkommen, <%= displayName %>!</h1>
-        
-        <div class="dashboard-grid">
-            <div class="card">
-                <h2>🏃 Raum buchen</h2>
-                <p>Reserviere den Trainingsraum für deine nächste Session</p>
-                <a href="/book" class="btn btn-primary">Jetzt buchen</a>
-            </div>
-            
-            <div class="card">
-                <h2>📅 Alle Buchungen</h2>
-                <p>Sieh dir alle kommenden Buchungen an</p>
-                <a href="/bookings" class="btn btn-secondary">Buchungen ansehen</a>
-            </div>
-            
-            <div class="card">
-                <h2>🏆 Rangliste</h2>
-                <p>Vergleiche deine Leistung mit anderen</p>
-                <a href="/leaderboard" class="btn btn-secondary">Zur Rangliste</a>
-            </div>
-        </div>
-        
-        <% if (upcomingBookings.length > 0) { %>
-            <div class="section">
-                <h2>Deine kommenden Buchungen</h2>
-                <div class="bookings-list">
-                    <% upcomingBookings.forEach(booking => { %>
-                        <div class="booking-item">
-                            <div class="booking-info">
-                                <strong>
-                                    <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
+  <%- include('partials/nav', { displayName }) %>
+
+  <div class="container">
+    <h1>Willkommen, <%= displayName %>!</h1>
+
+    <div class="dashboard-grid">
+      <div class="card">
+        <h2>🏃 Raum buchen</h2>
+        <p>Reserviere den Trainingsraum für deine nächste Session</p>
+        <a href="/book" class="btn btn-primary">Jetzt buchen</a>
+      </div>
+
+      <div class="card">
+        <h2>📅 Alle Buchungen</h2>
+        <p>Sieh dir alle kommenden Buchungen an</p>
+        <a href="/bookings" class="btn btn-secondary">Buchungen ansehen</a>
+      </div>
+
+      <div class="card">
+        <h2>🏆 Rangliste</h2>
+        <p>Vergleiche deine Leistung mit anderen</p>
+        <a href="/leaderboard" class="btn btn-secondary">Zur Rangliste</a>
+      </div>
+    </div>
+
+    <% if (upcomingBookings.length > 0) { %>
+    <div class="section">
+      <h2>Deine kommenden Buchungen</h2>
+      <div class="bookings-list">
+        <% upcomingBookings.forEach(booking => { %>
+        <div class="booking-item">
+          <div class="booking-info">
+            <strong>
+              <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
                                         weekday: 'short', 
                                         year: 'numeric', 
                                         month: 'long', 
                                         day: 'numeric' 
                                     }) %>
-                                </strong>
-                                <br>
-                                <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> - 
-                                <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
-                            </div>
-                            <% if (!booking.completed && booking.canComplete) { %>
-                                <button class="btn btn-small btn-primary" onclick="completeBooking(<%= booking.id %>)">
-                                    Training abschließen
-                                </button>
-                            <% } %>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-        <% } %>
-    </div>
-    
-    <div id="completeModal" class="modal">
-        <div class="modal-content">
-            <h2>Training abschließen</h2>
-            <form id="completeForm">
-                <input type="hidden" id="bookingId">
-                <div class="form-group">
-                    <label for="duration">Trainingszeit (Minuten)</label>
-                    <input type="number" id="duration" name="duration" required min="1">
-                </div>
-                <div class="form-group">
-                    <label for="distance">Gelaufene Strecke (km)</label>
-                    <input type="number" id="distance" name="distance" step="0.01" required min="0">
-                </div>
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Speichern</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Abbrechen</button>
-                </div>
-            </form>
+            </strong>
+            <br>
+            <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> -
+            <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
+          </div>
+          <% if (!booking.completed && booking.canComplete) { %>
+          <button class="btn btn-small btn-primary" onclick="completeBooking(<%= booking.id %>)">
+            Training abschließen
+          </button>
+          <% } %>
         </div>
+        <% }) %>
+      </div>
     </div>
-    
-    <script>
-        function completeBooking(bookingId) {
-            document.getElementById('bookingId').value = bookingId;
-            document.getElementById('completeModal').style.display = 'flex';
-        }
-        
-        function closeModal() {
-            document.getElementById('completeModal').style.display = 'none';
-        }
-        
-        document.getElementById('completeForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const bookingId = document.getElementById('bookingId').value;
-            const duration = document.getElementById('duration').value;
-            const distance = document.getElementById('distance').value;
-            
-            const response = await fetch(`/complete-booking/${bookingId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ duration, distance })
-            });
-            
-            if (response.ok) {
-                location.reload();
-            }
-        });
-    </script>
+    <% } %>
+  </div>
+
+  <div id="completeModal" class="modal">
+    <div class="modal-content">
+      <h2>Training abschließen</h2>
+      <form id="completeForm">
+        <input type="hidden" id="bookingId">
+        <div class="form-group">
+          <label for="duration">Trainingszeit (Minuten)</label>
+          <input type="number" id="duration" name="duration" required min="1">
+        </div>
+        <div class="form-group">
+          <label for="distance">Gelaufene Strecke (km)</label>
+          <input type="number" id="distance" name="distance" step="0.01" required min="0">
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Speichern</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Abbrechen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
 </body>
+
 </html>

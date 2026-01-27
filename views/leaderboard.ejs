@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rangliste</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rangliste</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-    <%- include('partials/nav', { displayName }) %>
-    
-    <div class="container">
-        <h1>🏆 Rangliste</h1>
-        
-        <% if (leaderboard.length === 0) { %>
-            <p>Noch keine Trainingsdaten vorhanden.</p>
-        <% } else { %>
-            <div class="leaderboard">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rang</th>
-                            <th>Name</th>
-                            <th>Gesamt km</th>
-                            <th>Gesamt Zeit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% leaderboard.forEach((entry, index) => { %>
-                            <tr class="<%= entry.displayName === displayName ? 'highlight' : '' %>">
-                                <td>
-                                    <% if (index === 0) { %>🥇
-                                    <% } else if (index === 1) { %>🥈
-                                    <% } else if (index === 2) { %>🥉
-                                    <% } else { %><%= index + 1 %>
-                                    <% } %>
-                                </td>
-                                <td><%= entry.displayName %></td>
-                                <td><%= entry.totalDistance.toFixed(2) %> km</td>
-                                <td><%= Math.floor(entry.totalDuration / 60) %>h <%= entry.totalDuration % 60 %>min</td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-        <% } %>
-        
-        <p class="text-center">
-            <a href="/dashboard" class="btn btn-secondary">Zurück zum Dashboard</a>
-        </p>
+  <%- include('partials/nav', { displayName }) %>
+  <div class="container">
+    <h1>🏆 Rangliste</h1>
+    <% if (leaderboard.length===0) { %>
+    <p>Noch keine Trainingsdaten vorhanden.</p>
+    <% } else { %>
+    <div class="leaderboard">
+      <table>
+        <thead>
+          <tr>
+            <th>Rang</th>
+            <th>Name</th>
+            <th>Gesamt km</th>
+            <th>Gesamt Zeit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% leaderboard.forEach((entry, index)=> { %>
+          <tr class="<%= entry.displayName === displayName ? 'highlight' : '' %>">
+            <td>
+              <% if (index===0) { %>🥇
+              <% } else if (index===1) { %>🥈
+              <% } else if (index===2) { %>🥉
+              <% } else { %>
+              <%= index + 1 %>
+              <% } %>
+            </td>
+            <td>
+              <%= entry.displayName %>
+            </td>
+            <td>
+              <%= entry.totalDistance.toFixed(2) %> km
+            </td>
+            <td>
+              <%= Math.floor(entry.totalDuration / 60) %>h <%= entry.totalDuration % 60 %>min
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
+    <% } %>
+    <p class="text-center">
+      <a href="/dashboard" class="btn btn-secondary">Zurück zum Dashboard</a>
+    </p>
+  </div>
 </body>
+
 </html>

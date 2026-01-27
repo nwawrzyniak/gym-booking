@@ -1,46 +1,55 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raum buchen</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raum buchen</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-    <%- include('partials/nav', { displayName }) %>
-    
-    <div class="container">
-        <div class="form-box">
-            <h1>Trainingsraum buchen</h1>
-            
-            <% if (typeof error !== 'undefined') { %>
-                <div class="alert alert-error"><%= error %></div>
-            <% } %>
-            
-            <form method="POST" action="/book">
-                <div class="form-group">
-                    <label for="date">Datum</label>
-                    <input type="date" id="date" name="date" required 
-                           min="<%= new Date().toISOString().split('T')[0] %>">
-                </div>
-                
-                <div class="form-group">
-                    <label for="startTime">Startzeit</label>
-                    <input type="time" id="startTime" name="startTime" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="endTime">Endzeit</label>
-                    <input type="time" id="endTime" name="endTime" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Buchen</button>
-            </form>
-            
-            <p class="text-center">
-                <a href="/dashboard">Zurück zum Dashboard</a>
-            </p>
+  <%- include('partials/nav', { displayName }) %>
+  <div class="container">
+    <div class="form-box">
+      <h1>Trainingsraum buchen</h1>
+      <% if (typeof error !=='undefined' ) { %>
+      <div class="alert alert-error">
+        <%= error %>
+      </div>
+      <% } %>
+      <form method="POST" action="/book">
+        <div class="form-group">
+          <label for="date">Datum</label>
+          <input type="date" id="date" name="date" required min="<%= new Date().toISOString().split('T')[0] %>">
         </div>
+        <div class="form-group">
+          <label>Startzeit</label>
+          <div class="time-input-group">
+            <input type="number" id="startHour" name="startHour" min="0" max="23" placeholder="HH" required>
+            <span>:</span>
+            <input type="number" id="startMinute" name="startMinute" min="0" max="59" placeholder="MM" required>
+          </div>
+          <input type="hidden" id="startTime" name="startTime">
+        </div>
+        <div class="form-group">
+          <label>Endzeit</label>
+          <div class="time-input-group">
+            <input type="number" id="endHour" name="endHour" min="0" max="23" placeholder="HH" required>
+            <span>:</span>
+            <input type="number" id="endMinute" name="endMinute" min="0" max="59" placeholder="MM" required>
+          </div>
+          <input type="hidden" id="endTime" name="endTime">
+        </div>
+        <button type="submit" class="btn btn-primary">Buchen</button>
+      </form>
+      <p class="text-center">
+        <a href="/dashboard">Zurück zum Dashboard</a>
+      </p>
     </div>
+  </div>
+
+  <script src="/js/new-booking.js"></script>
 </body>
+
 </html>
