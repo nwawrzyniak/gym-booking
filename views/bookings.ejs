@@ -10,10 +10,8 @@
 
 <body>
   <%- include('partials/nav', { displayName }) %>
-
   <div class="container">
     <h1>Alle Buchungen</h1>
-
     <% if (bookings.length === 0) { %>
     <p>Momentan gibt es keine kommenden Buchungen.</p>
     <% } else { %>
@@ -23,11 +21,11 @@
         <div class="booking-info">
           <strong><%= booking.displayName %></strong><br>
           <%= new Date(booking.startTime).toLocaleDateString('de-DE', { 
-                                weekday: 'short', 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                            }) %><br>
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }) %><br>
           <%= new Date(booking.startTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %> -
           <%= new Date(booking.endTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) %>
         </div>
@@ -35,10 +33,6 @@
       <% }) %>
     </div>
     <% } %>
-
-    <p class="text-center">
-      <a href="/dashboard" class="btn btn-secondary">Zurück zum Dashboard</a>
-    </p>
   </div>
 </body>
 

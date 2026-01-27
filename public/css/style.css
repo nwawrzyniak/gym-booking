@@ -19,10 +19,11 @@ body {
 }
 
 .nav-container {
-  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   margin: 0 auto;
   padding: 0 20px;
-  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -187,6 +188,11 @@ h1 {
   font-weight: 500;
 }
 
+input#date {
+  padding: 4px;
+  margin: 2px;
+}
+
 .alert {
   padding: 15px;
   border-radius: 8px;
@@ -328,6 +334,19 @@ h1 {
   width: 90%;
 }
 
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.burger-menu div {
+  width: 30px;
+  height: 3px;
+  background-color: #333;
+  margin: 4px 0;
+}
+
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -336,5 +355,29 @@ h1 {
   .booking-item {
     flex-direction: column;
     gap: 15px;
+  }
+
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    top: 60px;
+    left: 0;
+  }
+
+  .nav-menu.active {
+    display: flex;
+  }
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .burger-menu {
+    display: flex;
   }
 }

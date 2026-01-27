@@ -1,6 +1,11 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="/dashboard" class="nav-brand">🏃 Trainingsraum</a>
+    <div class="burger-menu" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <div class="nav-menu">
       <a class="nav-dashboard" href="/dashboard">Dashboard</a>
       <a class="nav-new-booking" href="/book">Buchen</a>
@@ -10,3 +15,9 @@
     </div>
   </div>
 </nav>
+<script>
+function toggleMenu() {
+    const menu = document.querySelector('.nav-menu');
+    menu.classList.toggle('active');
+}
+</script>
