@@ -55,6 +55,7 @@
             <td class="text-center"><%= user.notFinalizedTrainings %></td>
             <td>
               <div class="action-buttons">
+                <button class="btn btn-small btn-primary" onclick="editUser(<%= user.id %>, '<%= user.firstName %>', '<%= user.lastName %>', '<%= user.displayName %>', '<%= user.email %>', <%= user.humor %>, '<%= user.role %>')">Bearbeiten</button>
                 <button class="btn btn-small btn-danger" onclick="deleteUser(<%= user.id %>, '<%= user.displayName %>')">Löschen</button>
               </div>
             </td>
@@ -73,6 +74,53 @@
         <button class="btn btn-danger" id="confirmBtn">Löschen</button>
         <button class="btn btn-secondary" onclick="closeConfirmModal()">Abbrechen</button>
       </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>Benutzer bearbeiten</h2>
+      <form id="editUserForm">
+        <div class="form-group">
+          <label for="editFirstName">Vorname</label>
+          <input type="text" id="editFirstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+          <label for="editLastName">Nachname</label>
+          <input type="text" id="editLastName" name="lastName" required>
+        </div>
+        <div class="form-group">
+          <label for="editDisplayName">Anzeigename</label>
+          <input type="text" id="editDisplayName" name="displayName" required>
+        </div>
+        <div class="form-group">
+          <label for="editEmail">E-Mail-Adresse</label>
+          <input type="email" id="editEmail" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="editPassword">Passwort (leer lassen zum Beibehalten)</label>
+          <input type="password" id="editPassword" name="password">
+        </div>
+        <div class="form-group">
+          <label for="editHumor">Humor</label>
+          <select id="editHumor" name="humor" required>
+            <option value="false">Nein</option>
+            <option value="true">Ja</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editRole">Rolle</label>
+          <select id="editRole" name="role" required>
+            <option value="user">Benutzer</option>
+            <option value="admin">Admin</option>
+            <option value="super-admin">Super-Admin</option>
+          </select>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn btn-primary" onclick="saveUserChanges()">Speichern</button>
+          <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Abbrechen</button>
+        </div>
+      </form>
     </div>
   </div>
 

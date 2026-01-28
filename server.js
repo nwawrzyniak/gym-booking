@@ -517,6 +517,56 @@ app.post('/api/user/:id/humor', requireAdmin, async (req, res) => {
   res.json({ success: true, humor: user.humor });
 });
 
+app.post('/api/user/:id/edit', requireAdmin, async (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { firstName, lastName, displayName, email, password, humor, role } = req.body;
+
+  // Validate role
+  if (!['user', 'admin', 'super-admin'].includes(role)) {
+    return res.status(400).json({ error: 'Invalid role' });
+  }
+
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  // Check if email is already taken by another user
+  if (email !== user.email) {
+    const emailExists = users.find(u => u.email === email && u.id !== userId);
+    if (emailExists) {
+      return res.status(400).json({ error: 'Email already in use' });
+    }
+  }
+
+  // Check if displayName is already taken by another user
+  if (displayName !== user.displayName) {
+    const displayNameExists = users.find(u => u.displayName === displayName && u.id !== userId);
+    if (displayNameExists) {
+      return res.status(400).json({ error: 'Display name already in use' });
+    }
+  }
+
+  // Update user information
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.displayName = displayName;
+  user.email = email;
+  user.humor = humor === true || humor === 'true';
+  user.role = role;
+
+  // Update password if provided
+  if (password && password.trim()) {
+    user.password = await bcrypt.hash(password, 10);
+  }
+
+  await writeJSON(FILES.users, users);
+
+  res.json({ success: true });
+});
+
 app.delete('/api/user/:id', requireAdmin, async (req, res) => {
   const userId = parseInt(req.params.id);
 

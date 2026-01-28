@@ -92,7 +92,77 @@ function closeConfirmModal() {
   userIdToDelete = null;
 }
 
-// Close modal when clicking outside of it
+let userIdToEdit = null;
+
+function editUser(userId, firstName, lastName, displayName, email, humor, role) {
+  userIdToEdit = userId;
+  const editModal = document.getElementById('editModal');
+  
+  document.getElementById('editFirstName').value = firstName;
+  document.getElementById('editLastName').value = lastName;
+  document.getElementById('editDisplayName').value = displayName;
+  document.getElementById('editEmail').value = email;
+  document.getElementById('editPassword').value = '';
+  document.getElementById('editHumor').value = humor.toString();
+  document.getElementById('editRole').value = role;
+  
+  editModal.style.display = 'block';
+}
+
+function saveUserChanges() {
+  if (userIdToEdit === null) return;
+  
+  const firstName = document.getElementById('editFirstName').value;
+  const lastName = document.getElementById('editLastName').value;
+  const displayName = document.getElementById('editDisplayName').value;
+  const email = document.getElementById('editEmail').value;
+  const password = document.getElementById('editPassword').value;
+  const humor = document.getElementById('editHumor').value === 'true';
+  const role = document.getElementById('editRole').value;
+  
+  const userData = {
+    firstName,
+    lastName,
+    displayName,
+    email,
+    humor,
+    role
+  };
+  
+  if (password) {
+    userData.password = password;
+  }
+  
+  fetch(`/api/user/${userIdToEdit}/edit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Error updating user');
+    }
+    return response.json();
+  })
+  .then(() => {
+    closeEditModal();
+    location.reload();
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Fehler beim Aktualisieren des Benutzers');
+  });
+}
+
+function closeEditModal() {
+  const editModal = document.getElementById('editModal');
+  editModal.style.display = 'none';
+  userIdToEdit = null;
+}
+
+// Close confirmation modal when clicking outside of it
 window.onclick = function(event) {
   const confirmModal = document.getElementById('confirmModal');
   if (event.target === confirmModal) {
