@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏃 Benutzerverwaltung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <%- include('partials/nav', { displayName, humor: false, isAdmin }) %>
+
+  <div class="container">
+    <h1>Benutzerverwaltung</h1>
+
+    <div class="users-table-container">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Anzeigename</th>
+            <th>Rolle</th>
+            <th>Humor</th>
+            <th>Buchungen</th>
+            <th>Kommende Buchungen</th>
+            <th>Abgeschl. Trainings</th>
+            <th>Nicht finalisiert</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+          <tr class="user-row" data-user-id="<%= user.id %>">
+            <td><%= user.firstName %></td>
+            <td><%= user.lastName %></td>
+            <td><%= user.displayName %></td>
+            <td>
+              <select class="role-dropdown" onchange="updateUserRole(<%= user.id %>, this.value)">
+                <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>Benutzer</option>
+                <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                <option value="super-admin" <%= user.role === 'super-admin' ? 'selected' : '' %>>Super-Admin</option>
+              </select>
+            </td>
+            <td>
+              <select class="humor-dropdown" onchange="updateUserHumor(<%= user.id %>, this.value)">
+                <option value="false" <%= user.humor === false ? 'selected' : '' %>>Nein</option>
+                <option value="true" <%= user.humor === true ? 'selected' : '' %>>Ja</option>
+              </select>
+            </td>
+            <td class="text-center"><%= user.totalBookings %></td>
+            <td class="text-center"><%= user.upcomingBookings %></td>
+            <td class="text-center"><%= user.completedTrainings %></td>
+            <td class="text-center"><%= user.notFinalizedTrainings %></td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-small btn-danger" onclick="deleteUser(<%= user.id %>, '<%= user.displayName %>')">Löschen</button>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <h2>Bestätigung</h2>
+      <p id="confirmMessage"></p>
+      <div class="button-group">
+        <button class="btn btn-danger" id="confirmBtn">Löschen</button>
+        <button class="btn btn-secondary" onclick="closeConfirmModal()">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin-users.js"></script>
+</body>
+
+</html>

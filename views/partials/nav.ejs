@@ -13,6 +13,9 @@
       <% if (humor) { %>
       <a class="nav-leaderboard" href="/leaderboard">Rangliste</a>
       <% } %>
+      <% if (isAdmin) { %>
+      <a class="nav-users" href="/admin-users">Benutzerverwaltung</a>
+      <% } %>
       <a class="nav-logout" href="/logout">Logout</a>
     </div>
   </div>

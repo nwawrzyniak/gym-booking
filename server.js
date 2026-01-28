@@ -74,10 +74,31 @@ app.use(session({
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
+// Helper functions
+const isAdmin = (user) => {
+  return user && (user.role === 'admin' || user.role === 'super-admin');
+};
+
+const isSuperAdmin = (user) => {
+  return user && user.role === 'super-admin';
+};
+
 // Auth middleware
 const requireAuth = (req, res, next) => {
   if (!req.session.userId) {
     return res.redirect('/');
+  }
+  next();
+};
+
+const requireAdmin = async (req, res, next) => {
+  if (!req.session.userId) {
+    return res.redirect('/');
+  }
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === req.session.userId);
+  if (!isAdmin(user)) {
+    return res.redirect('/dashboard');
   }
   next();
 };
@@ -291,6 +312,7 @@ app.get('/dashboard', requireAuth, async (req, res) => {
   res.render('dashboard', { 
     displayName: req.session.displayName,
     humor: user?.humor || false,
+    isAdmin: isAdmin(user),
     upcomingBookings
   });
 });
@@ -298,7 +320,11 @@ app.get('/dashboard', requireAuth, async (req, res) => {
 app.get('/book', requireAuth, async (req, res) => {
   const users = await readJSON(FILES.users);
   const user = users.find(u => u.id === req.session.userId);
-  res.render('book', { displayName: req.session.displayName, humor: user?.humor || false });
+  res.render('book', { 
+    displayName: req.session.displayName, 
+    humor: user?.humor || false,
+    isAdmin: isAdmin(user)
+  });
 });
 
 app.post('/book', requireAuth, async (req, res) => {
@@ -313,6 +339,7 @@ app.post('/book', requireAuth, async (req, res) => {
     return res.render('book', { 
       displayName: req.session.displayName,
       humor: user?.humor || false,
+      isAdmin: isAdmin(user),
       error: 'Die Endzeit muss nach der Startzeit liegen.' 
     });
   }
@@ -326,8 +353,12 @@ app.post('/book', requireAuth, async (req, res) => {
   });
 
   if (conflict) {
+    const users = await readJSON(FILES.users);
+    const user = users.find(u => u.id === req.session.userId);
     return res.render('book', { 
       displayName: req.session.displayName,
+      humor: user?.humor || false,
+      isAdmin: isAdmin(user),
       error: 'Der Raum ist zu dieser Zeit bereits reserviert.' 
     });
   }
@@ -360,6 +391,7 @@ app.get('/bookings', requireAuth, async (req, res) => {
   res.render('bookings', { 
     displayName: req.session.displayName,
     humor: user?.humor || false,
+    isAdmin: isAdmin(user),
     bookings: allBookings
   });
 });
@@ -412,8 +444,93 @@ app.get('/leaderboard', requireAuth, async (req, res) => {
   res.render('leaderboard', { 
     displayName: req.session.displayName,
     humor: user?.humor || false,
+    isAdmin: isAdmin(user),
     leaderboard
   });
+});
+
+app.get('/admin-users', requireAdmin, async (req, res) => {
+  const users = await readJSON(FILES.users);
+  const bookings = await readJSON(FILES.bookings);
+  const sessions = await readJSON(FILES.sessions);
+  const currentUser = users.find(u => u.id === req.session.userId);
+  const now = new Date();
+
+  const usersWithStats = users.map(user => {
+    const userBookings = bookings.filter(b => b.userId === user.id);
+    const upcomingBookings = userBookings.filter(b => new Date(b.endTime) > now);
+    const completedTrainings = sessions.filter(s => s.userId === user.id).length;
+    const notFinalizedTrainings = userBookings.filter(b => !b.completed && new Date(b.startTime) <= now).length;
+
+    return {
+      ...user,
+      totalBookings: userBookings.length,
+      upcomingBookings: upcomingBookings.length,
+      completedTrainings,
+      notFinalizedTrainings
+    };
+  });
+
+  res.render('admin-users', { 
+    displayName: req.session.displayName,
+    users: usersWithStats,
+    currentUser,
+    isAdmin: true
+  });
+});
+
+app.post('/api/user/:id/role', requireAdmin, async (req, res) => {
+  const { role } = req.body;
+  const userId = parseInt(req.params.id);
+
+  if (!['user', 'admin', 'super-admin'].includes(role)) {
+    return res.status(400).json({ error: 'Invalid role' });
+  }
+
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  user.role = role;
+  await writeJSON(FILES.users, users);
+
+  res.json({ success: true, role });
+});
+
+app.post('/api/user/:id/humor', requireAdmin, async (req, res) => {
+  const { humor } = req.body;
+  const userId = parseInt(req.params.id);
+
+  const users = await readJSON(FILES.users);
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  user.humor = humor === true || humor === 'true';
+  await writeJSON(FILES.users, users);
+
+  res.json({ success: true, humor: user.humor });
+});
+
+app.delete('/api/user/:id', requireAdmin, async (req, res) => {
+  const userId = parseInt(req.params.id);
+
+  const users = await readJSON(FILES.users);
+  const userIndex = users.findIndex(u => u.id === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  users.splice(userIndex, 1);
+  await writeJSON(FILES.users, users);
+
+  res.json({ success: true });
 });
 
 // Start server

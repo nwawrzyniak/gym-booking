@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <%- include('partials/nav', { displayName, humor }) %>
+  <%- include('partials/nav', { displayName, humor, isAdmin }) %>
   <div class="container">
     <h1>Alle Buchungen</h1>
     <% if (bookings.length === 0) { %>
