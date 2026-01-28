@@ -527,8 +527,19 @@ app.delete('/api/user/:id', requireAdmin, async (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
 
+  // Delete user from users.json
   users.splice(userIndex, 1);
   await writeJSON(FILES.users, users);
+
+  // Delete all bookings for this user
+  const bookings = await readJSON(FILES.bookings);
+  const filteredBookings = bookings.filter(b => b.userId !== userId);
+  await writeJSON(FILES.bookings, filteredBookings);
+
+  // Delete all training sessions for this user
+  const sessions = await readJSON(FILES.sessions);
+  const filteredSessions = sessions.filter(s => s.userId !== userId);
+  await writeJSON(FILES.sessions, filteredSessions);
 
   res.json({ success: true });
 });
