@@ -9,9 +9,9 @@
 </head>
 
 <body>
-  <%- include('partials/nav', { displayName, humor: false, isAdmin }) %>
+  <%- include('partials/nav', { displayName, humor: true, isAdmin }) %>
 
-  <div class="container">
+  <div class="admin-container">
     <h1>Benutzerverwaltung</h1>
 
     <div class="users-table-container">
@@ -21,7 +21,7 @@
             <th>Vorname</th>
             <th>Nachname</th>
             <th>Anzeigename</th>
-            <th>Rolle</th>
+            <th id="table-header-role">Rolle</th>
             <th>Humor</th>
             <th>Buchungen</th>
             <th>Kommende Buchungen</th>
@@ -36,7 +36,7 @@
             <td><%= user.firstName %></td>
             <td><%= user.lastName %></td>
             <td><%= user.displayName %></td>
-            <td>
+            <td id="table-data-role">
               <select class="role-dropdown" onchange="updateUserRole(<%= user.id %>, this.value)">
                 <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>Benutzer</option>
                 <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>

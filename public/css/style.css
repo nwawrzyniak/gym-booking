@@ -75,6 +75,10 @@ body {
   margin: 0 auto;
 }
 
+.admin-container {
+  margin: 0 16px;
+}
+
 .welcome-box,
 .form-box {
   background: white;

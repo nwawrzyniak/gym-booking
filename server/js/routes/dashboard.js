@@ -13,16 +13,19 @@ router.get('/dashboard', requireAuth, async (req, res) => {
   const user = users.find(u => u.id === req.session.userId);
   const now = new Date();
 
-  const userBookings = bookings
-    .filter(b => b.userId === req.session.userId)
-    .filter(b => new Date(b.endTime) > now)
+  const upcomingBookings = bookings
+    .filter(b => b.userId === req.session.userId && new Date(b.endTime) > now)
+    .map(b => ({
+      ...b,
+      canComplete: !b.completed && new Date(b.startTime) <= now
+    }))
     .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
   res.render('dashboard', {
     displayName: req.session.displayName,
     humor: user?.humor || false,
     isAdmin: isAdmin(user),
-    bookings: userBookings
+    upcomingBookings
   });
 });
 
