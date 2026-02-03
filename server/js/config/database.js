@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs').promises;
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const DATA_DIR = path.join(__dirname, '../../../data');
 
 // File paths
 const FILES = {
