@@ -7,7 +7,7 @@ const { readJSON, writeJSON } = require('../utils/file-operations');
 const { getClientIP } = require('../utils/ip-helper');
 const { sendRegistrationEmail } = require('../services/email-service');
 
-// Home page / Login page
+// Home page
 router.get('/', async (req, res) => {
   if (req.session.userId) {
     return res.redirect('/dashboard');
@@ -16,6 +16,13 @@ router.get('/', async (req, res) => {
 });
 
 // Login
+app.get('/login', async (req, res) => {
+  if (req.session.userId) {
+    return res.redirect('/dashboard');
+  }
+  res.render('login');
+});
+
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const users = await readJSON(FILES.users);
@@ -41,7 +48,7 @@ router.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-// Register page
+// Register
 router.get('/register', async (req, res) => {
   if (req.session.userId) {
     return res.redirect('/dashboard');
@@ -49,7 +56,6 @@ router.get('/register', async (req, res) => {
   res.render('register');
 });
 
-// Register post
 router.post('/register', async (req, res) => {
   const { firstName, lastName, displayName, email, password } = req.body;
   const ip = getClientIP(req);
@@ -101,69 +107,6 @@ router.post('/register', async (req, res) => {
     console.error('Render error:', err);
     res.render('register', { error: 'Ein Fehler ist aufgetreten.' });
   }
-});
-
-// Approve user
-router.get('/admin/approve/:token', async (req, res) => {
-  const pending = await readJSON(FILES.pending);
-  const userIndex = pending.findIndex(u => u.token === req.params.token);
-
-  if (userIndex === -1) {
-    return res.send('Ungültiger Token oder bereits verarbeitet.');
-  }
-
-  const user = pending[userIndex];
-  const humor = req.query.humor === 'true';
-  user.humor = humor;
-  user.role = user.role || 'user';
-  delete user.token;
-
-  const users = await readJSON(FILES.users);
-  users.push(user);
-  await writeJSON(FILES.users, users);
-
-  pending.splice(userIndex, 1);
-  await writeJSON(FILES.pending, pending);
-
-  res.send('Benutzer wurde erfolgreich freigegeben!');
-});
-
-// Reject user
-router.get('/admin/reject/:token', async (req, res) => {
-  const pending = await readJSON(FILES.pending);
-  const userIndex = pending.findIndex(u => u.token === req.params.token);
-
-  if (userIndex === -1) {
-    return res.send('Ungültiger Token oder bereits verarbeitet.');
-  }
-
-  pending.splice(userIndex, 1);
-  await writeJSON(FILES.pending, pending);
-
-  res.send('Registrierung wurde abgelehnt.');
-});
-
-// Block IP
-router.get('/admin/block/:token', async (req, res) => {
-  const pending = await readJSON(FILES.pending);
-  const userIndex = pending.findIndex(u => u.token === req.params.token);
-
-  if (userIndex === -1) {
-    return res.send('Ungültiger Token oder bereits verarbeitet.');
-  }
-
-  const user = pending[userIndex];
-  const blockedIPs = await readJSON(FILES.blocked);
-
-  if (!blockedIPs.includes(user.ip)) {
-    blockedIPs.push(user.ip);
-    await writeJSON(FILES.blocked, blockedIPs);
-  }
-
-  pending.splice(userIndex, 1);
-  await writeJSON(FILES.pending, pending);
-
-  res.send('IP-Adresse wurde blockiert und Registrierung abgelehnt.');
 });
 
 module.exports = router;
