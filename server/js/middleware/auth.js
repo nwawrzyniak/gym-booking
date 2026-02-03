@@ -1,5 +1,5 @@
 const { FILES } = require('../config/database');
-const { readJSON } = require('../utils/fileOperations');
+const { readJSON } = require('../utils/file-operations');
 const { isAdmin } = require('../utils/helpers');
 
 // Auth middleware

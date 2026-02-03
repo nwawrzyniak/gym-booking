@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 const { FILES } = require('../config/database');
-const { readJSON, writeJSON } = require('../utils/fileOperations');
-const { getClientIP } = require('../utils/ipHelper');
-const { sendRegistrationEmail } = require('../services/emailService');
+const { readJSON, writeJSON } = require('../utils/file-operations');
+const { getClientIP } = require('../utils/ip-helper');
+const { sendRegistrationEmail } = require('../services/email-service');
 
 // Home page / Login page
 router.get('/', async (req, res) => {

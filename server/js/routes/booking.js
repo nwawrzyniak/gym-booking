@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { FILES } = require('../config/database');
-const { readJSON, writeJSON } = require('../utils/fileOperations');
+const { readJSON, writeJSON } = require('../utils/file-operations');
 const { isAdmin } = require('../utils/helpers');
 const { requireAuth } = require('../middleware/auth');
 
