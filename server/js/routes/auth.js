@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // Login
-app.get('/login', async (req, res) => {
+router.get('/login', async (req, res) => {
   if (req.session.userId) {
     return res.redirect('/dashboard');
   }
