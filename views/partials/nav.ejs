@@ -1,6 +1,12 @@
 <nav class="navbar">
   <div class="nav-container">
-    <a href="/dashboard" class="nav-brand">🏃 Trainingsraum</a>
+    <a href="/dashboard" class="nav-brand">
+      <% if (humor) { %>
+        🏃 Trainingsraum
+      <% } else { %>
+        🏃 Laufband
+      <% } %>
+    </a>
     <div class="burger-menu" onclick="toggleMenu()">
       <div></div>
       <div></div>
