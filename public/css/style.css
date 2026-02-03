@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -379,6 +380,10 @@ input#date {
 
   .nav-menu.active {
     display: flex;
+    border-top: solid;
+    border-bottom: solid;
+    border-width: 4px;
+    width: 100%;
   }
 
   .navbar {
@@ -505,6 +510,7 @@ input#date {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -526,6 +532,7 @@ input#date {
     transform: translateY(-50px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
