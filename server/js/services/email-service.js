@@ -9,7 +9,7 @@ const sendRegistrationEmail = async (user, token) => {
   const blockUrl = `${process.env.BASE_URL}/admin/block/${token}`;
 
   // Read template
-  const templatePath = path.join(__dirname, '../../templates/html/admin-registration-email.html');
+  const templatePath = path.join(__dirname, '../../templates/html/mail/admin-registration-email.html');
   let htmlTemplate = await fs.readFile(templatePath, 'utf-8');
 
   // Replace placeholders
