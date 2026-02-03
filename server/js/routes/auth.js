@@ -26,15 +26,15 @@ router.get('/login', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const users = await readJSON(FILES.users);
-  const user = users.find(u => u.email === email);
 
+  const user = users.find(u => u.email === email);
   if (!user) {
-    return res.render('index', { error: 'Ungültige Anmeldedaten.' });
+    return res.render('login', { error: 'Ungültige Anmeldedaten.' });
   }
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    return res.render('index', { error: 'Ungültige Anmeldedaten.' });
+    return res.render('login', { error: 'Ungültige Anmeldedaten.' });
   }
 
   req.session.userId = user.id;
